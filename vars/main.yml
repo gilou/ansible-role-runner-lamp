@@ -1,0 +1,23 @@
+runner_packages:
+  - apache2
+  - mariadb-server
+  - python-mysqldb
+  - unzip
+  - phpunit
+  - git
+  - acl
+runner_php_packages:
+  - "php{{ runner_php_version }}"
+  - "php{{ runner_php_version }}-cli"
+  - "php{{ runner_php_version }}-common"
+  - "php{{ runner_php_version }}-curl"
+  - "php{{ runner_php_version }}-gd"
+  - "php{{ runner_php_version }}-intl"
+  - "php{{ runner_php_version }}-json"
+  - "php{{ runner_php_version }}-mbstring"
+  - "php{{ runner_php_version }}-mysql"
+  - "php{{ runner_php_version }}-opcache"
+  - "php{{ runner_php_version }}-readline"
+  - "php{{ runner_php_version }}-xml"
+  - "php{{ runner_php_version }}-zip"
+  - "php{{ runner_php_version }}-ldap"

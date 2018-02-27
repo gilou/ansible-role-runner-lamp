@@ -1,0 +1,15 @@
+# Variables for the role
+---
+# Should be defined more precisely
+# runner_user: gitlab-runner
+# runner_group: gitlab-runner
+runner_webroot: /srv/www
+runner_apache_group: www-data
+runner_mysql_password: ~
+runner_mysql_userdb:
+  test: test
+runner_domain: test.dawan.biz
+runner_extra_packages: ~
+runner_install_composer: True
+runner_php_version: 7.2
+runner_install_git: True

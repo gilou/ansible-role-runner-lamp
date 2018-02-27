@@ -1,0 +1,33 @@
+- name: prérequis
+  package:
+    name: "{{ item }}"
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - python-apt
+- name: clé pour le dépôt de Ondřej Surý
+  apt_key:
+    url: "https://packages.sury.org/php/apt.gpg"
+- name: dépôt PHP de Ondřej Surý
+  apt_repository:
+    repo: deb https://packages.sury.org/php/ {{ ansible_distribution_release }} main
+    filename: sury
+- name: Packages to remove to switch on sury's
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - php
+    - php-mysql
+    - php-curl
+    - php-gd
+    - php-mbstring
+    - php-mcrypt
+    - php-gd
+    - php-xml
+    - php-zip
+    - php-intl
+- name: PHP packages
+  package:
+    name: "{{ item }}"
+  with_items: "{{ runner_php_packages }}"

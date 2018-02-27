@@ -1,0 +1,35 @@
+- name: Package
+  package: name={{ item }}
+  with_items: "{{ runner_packages }}"
+- import_tasks: php72.yml
+- name: Extra Package
+  package: name={{ item }}
+  with_items: "{{ runner_extra_packages }}"
+- name: Conf mysql
+  mysql_user: name='root' host='localhost' password={{ runner_mysql_password }}
+- name: Conf client mysql
+  template: src=my.cnf.j2  dest=/root/.my.cnf owner=root group=root mode=0600
+- name: DB
+  mysql_db: name={{ item.key }} state=present
+  with_dict: "{{ runner_mysql_userdb }}"
+- name: DB user
+  mysql_user: name={{ item.key }} password={{ item.value }} host='localhost' priv='*.*:USAGE/{{ item.key }}.*:ALL'
+  with_dict: "{{ runner_mysql_userdb }}"
+- name: Module rewrite
+  apache2_module: name=rewrite state=present
+  ignore_configcheck: True
+  notify: restart apache
+- name: Conf apache runner
+  template: src=runner.conf.j2 dest=/etc/apache2/sites-available/runner.conf
+  notify: reload apache
+- name: Conf apache enabled
+  file: state=link src=../sites-available/runner.conf path=/etc/apache2/sites-enabled/runner.conf
+  notify: reload apache
+- name: User gitlab in www-data
+  user: name={{ runner_user | default('vagrant') }} group={{ runner_group | default('vagrant') }} groups={{ runner_apache_group }}
+- name: Webroot
+  file: path={{ runner_webroot }} state=directory owner={{ runner_user | default('vagrant') }} group={{ runner_group | default('vagrant') }} mode=0755
+- name: Log file
+  file: path={{ runner_webroot }}/logs state=directory owner=www-data group={{ runner_group | default('vagrant') }} mode=0775
+- include: composer.yml
+  when: runner_install_composer

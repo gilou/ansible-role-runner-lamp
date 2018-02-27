@@ -1,0 +1,10 @@
+- name: bin dir pour vagrant
+  file:
+    path: /home/{{ runner_user | default('vagrant') }}/bin
+    state: directory
+    owner: "{{ runner_user | default('vagrant') }}"
+    mode: 0755
+    group: "{{ runner_group | default('vagrant') }}"
+- name: composer
+  get_url: url=https://getcomposer.org/composer.phar dest=/home/{{ runner_user | default('vagrant') }}/bin/composer.phar mode=0755
+

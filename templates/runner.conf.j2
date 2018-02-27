@@ -1,0 +1,24 @@
+<VirtualHost *:80>
+        ServerName {{ runner_domain }}
+	ServerAlias *.{{ runner_domain }} localhost
+
+        ServerAdmin admin@dawan.fr
+        DocumentRoot {{ runner_webroot }}/web
+
+	LogFormat "%{Host}i %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" hostname_combined
+        ErrorLog {{ runner_webroot }}/logs/error.log
+        CustomLog {{ runner_webroot }}/logs/access.log hostname_combined
+
+	RewriteEngine On
+	# Réécriture : BRANCHE-PROJET.{{ runner_domain }}
+	RewriteCond "%{HTTP_HOST}" "^(?:.+\.)?([^-]+)-([^.]+)\.{{ runner_domain_regex|default(runner_domain | replace('.','\.')) }}(:[0-9]+)?$
+	# Renvoie sur {{ runner_webroot }}/PROJET/BRANCHE/xxx
+	RewriteRule ^(.*)$ "{{ runner_webroot }}/%2/%1/web/$1" [L]
+
+	<Directory {{ runner_webroot }}>
+		AllowOverride all
+		Require all granted
+	</Directory>
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
